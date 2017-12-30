@@ -4,6 +4,18 @@ angular
   .module('waterSportApp')
   .controller('homeController',['$scope',function ($scope) {
     $scope.db = {};
+	//function is called for sending log book entry
+	/*var socket =  io();
+	$scope.sendLogBookEntry = function() {  
+		socket.emit('add entry in logbook', {
+			Boat: "Seagul",
+		    Crew: "Brendy, Kelly",
+			Destination: "Boulter's Lock",
+			Departure : "2017/12/30 12:00",
+			Arrival : "2017/12/31 11:00"
+		});
+	};*/
+	
     $scope.db.items = [{
       "id": 1,
       "name": {

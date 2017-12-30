@@ -7,8 +7,30 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var mongoose = require('mongoose');
+
+var db = mongoose.connection;
+var logbook;
+db.on('error', console.error);
+db.once('open', function() {
+                                                                 // creating different schemas for different tables
+   var logbookSchema = new mongoose.Schema({
+       Boat: String,
+       Crew: {type: String},
+        Destination: { type: String },
+        Departure : { type: String },
+        Arrival : { type: String }
+   });
+// Compile a 'logbook' model using the logbookSchema as the structure.
+// Mongoose also creates a MongoDB collection called 'logbook' for these documents.
+   logbook = mongoose.model('logbook', logbookSchema);
+});
+
+mongoose.connect('mongodb://localhost:27017/WaterSportsLogbook');
 
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -42,5 +64,37 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+io.sockets.on('connection', function(socket){
+	
+	//functionality for saving logbook entry in database. 
+    socket.on('add entry in logbook', function(data){
+        //io.emit('chat message', data);
+        var logbookentry = new logbook({
+			Boat: data.Boat
+		    , Crew: data.Crew
+			, Destination: data.Destination
+			, Departure : data.Departure
+			, Arrival : data.Arrival
+        });
+
+        logbookentry.save(function(err, thor) {
+            if (err) return console.error(err);
+        });
+    });
+
+	//functionality for getting all logbook entry from database
+    socket.on('get All logbook entry', function(){
+        logbook.find(function (err, data) {
+            if (err) return console.error(err);
+            io.emit('get All logbook entry', data);
+        });
+    });
+
+});
+
+var port = process.env.PORT || 3000;
+http.listen(port);
+
 
 module.exports = app;

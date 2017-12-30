@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/handsontable/dist/handsontable.min.css">
     <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.5.1/socket.io.min.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
     <script src="bower_components/handsontable/dist/handsontable.full.js" charset="utf-8"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
@@ -20,4 +21,30 @@
   <body ng-app="waterSportApp">
       {{{body}}}
   </body>
+  
+  <script type="text/javascript">
+	var socket =  io.connect('http://localhost:3000');
+	function sendLogBookEntry() {  
+		socket.emit('add entry in logbook', {
+			Boat: "Seagul",
+		    Crew: "Brendy, Kelly",
+			Destination: "Boulter's Lock",
+			Departure : "2017/12/30 12:00",
+			Arrival : "2017/12/31 11:00"
+		});
+	};
+    sendLogBookEntry();
+    socket.emit('get All logbook entry', {});
+    //This is used to get all previous logbook entry
+    socket.on('get All logbook entry', function(data){
+        for(var i in data) {
+            console.log(data[i].Boat);
+            console.log(data[i].Crew);
+            console.log(data[i].Destination);
+            console.log(data[i].Departure);
+            console.log(data[i].Arrival);
+        }
+    });
+
+  </script>  
 </html>
