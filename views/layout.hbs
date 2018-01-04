@@ -26,12 +26,12 @@
 	var socket =  io.connect('http://localhost:3000');
 	function sendLogBookEntry() {  
 		socket.emit('add entry in logbook', {
-			Boat: "Seagul",
-		    Crew: "Brendy, Kelly",
-			Destination: "Boulter's Lock",
-			Departure : "2017/12/30 12:00",
-			Arrival : "2017/12/31 11:00"
-		});
+            Boat: "Seagul",
+            Crew: "Brendy, Kelly",
+            Destination: "Boulter's Lock",
+            Departure : "2017/12/30 12:00",
+            Arrival : "2017/12/31 11:00"
+        });
 	};
     sendLogBookEntry();
     socket.emit('get All logbook entry', {});
