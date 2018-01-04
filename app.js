@@ -91,6 +91,12 @@ io.sockets.on('connection', function(socket){
         });
     });
 
+    socket.on('on change', function(data){
+        console.log("on change method>>>>>>>>>>>");
+        console.log(data);
+        socket.broadcast.emit('new changes found',data)
+    });
+
 });
 
 var port = process.env.PORT || 3000;
