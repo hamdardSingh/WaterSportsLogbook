@@ -71,11 +71,21 @@ angular
               if(this.getData()[rowID][0]){
                   id = this.getData()[rowID][0];
               }
-              sendLogBookEntry({ID:id,Field:changes[0][1],Value:changes[0][3]});
+              sendLogBookEntry({RowId:rowID,ID:id,Field:changes[0][1],Value:changes[0][3]});
           }
 
       }
 
-
+      socket.on('sendNewId', function(data){
+          var obj = {};
+          obj = thisObj.db.items[data.RowId];
+          console.log("-----------");
+          console.log(obj);
+          console.log(data.id);
+          obj.id = data.id;
+          //obj[id] = data.id;
+          thisObj.db.items[data.RowId] = obj;
+          thisObj.$apply();
+      });
 
   }]);

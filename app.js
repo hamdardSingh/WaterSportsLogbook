@@ -73,35 +73,26 @@ io.sockets.on('connection', function(socket){
         console.log(data);
         var obj = {};
         obj[data.Field] = data.Value;
+        var rowId = data.RowId;
         var logbookentry = new logbook(obj);
         if(data.ID ==  null) {
             console.log("new entry");
             logbookentry.save(function (err, thor) {
                 if (err) return console.error(err);
+                console.log(thor);
+                io.emit('sendNewId', {id:thor._id,RowId:rowId});
             });
         }else{
             console.log("old entry");
-            var id = mongoose.Types.ObjectId(''+data.ID+'');
-            console.log(id);
-            console.log(logbookentry);
-            /*logbook.findByIdAndUpdate(id,logbookentry,function (err, data) {
-                if (err) return handleError(err);
-                console.log(data);
-            });*/
-
-            logbook.findOneAndUpdate({_id : id},logbookentry, function (err, data) {
-                /*if (err)
+            var id = mongoose.Types.ObjectId(data.ID);
+            logbook.findOneAndUpdate({_id : id},obj, function (err, data) {
+                if (err)
                     console.log(err);
-                    return handleError(err);
-*/
                 console.log(data);
             });
 
 
         }
-        /*logbookentry.save(function (err, thor) {
-            if (err) return console.error(err);
-        });*/
 
     });
 
