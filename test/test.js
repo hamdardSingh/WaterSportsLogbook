@@ -6,14 +6,11 @@ var io = require('socket.io-client')
 function returnsName(name){
     return name;
 }
-
 describe('1st unit test case', function () {
     it('return the name passed to the function', function(){
         returnsName('Tarun').should.equal('Tarun');
     })
 })
-
-
 
 io = require('socket.io-client')
 var assert = require("assert")
@@ -24,12 +21,14 @@ var socketOptions = {
     transports: ['websocket'],
     'force new connection': true
 };
-describe ('socket', function(){
 
+
+
+describe ('socket', function(){
     it('should connect', function (done) {
 this.socket = io.connect(socketURL, socketOptions)
-this.socket.on ('connect', function() {
+this.socket.on ('connect', function(socket) {
     console.log('connected')
+
     done();
 })})});
-
