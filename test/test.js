@@ -2,7 +2,7 @@
 
 var chai = require('chai');
 var expect = chai.expect;
-chai.should();
+chai.Should();
 var io = require('socket.io-client')
     ,io_server = require('socket.io').listen(3000);
 function returnsName(name){
