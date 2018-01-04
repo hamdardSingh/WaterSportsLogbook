@@ -70,23 +70,46 @@ io.sockets.on('connection', function(socket){
 	//functionality for saving logbook entry in database. 
     socket.on('add entry in logbook', function(data){
         //io.emit('chat message', data);
-        var logbookentry = new logbook({
-			Boat: data.Boat
-		    , Crew: data.Crew
-			, Destination: data.Destination
-			, Departure : data.Departure
-			, Arrival : data.Arrival
-        });
+        console.log(data);
+        var obj = {};
+        obj[data.Field] = data.Value;
+        var logbookentry = new logbook(obj);
+        if(data.ID ==  null) {
+            console.log("new entry");
+            logbookentry.save(function (err, thor) {
+                if (err) return console.error(err);
+            });
+        }else{
+            console.log("old entry");
+            var id = mongoose.Types.ObjectId(''+data.ID+'');
+            console.log(id);
+            console.log(logbookentry);
+            /*logbook.findByIdAndUpdate(id,logbookentry,function (err, data) {
+                if (err) return handleError(err);
+                console.log(data);
+            });*/
 
-        logbookentry.save(function(err, thor) {
+            logbook.findOneAndUpdate({_id : id},logbookentry, function (err, data) {
+                /*if (err)
+                    console.log(err);
+                    return handleError(err);
+*/
+                console.log(data);
+            });
+
+
+        }
+        /*logbookentry.save(function (err, thor) {
             if (err) return console.error(err);
-        });
+        });*/
+
     });
 
 	//functionality for getting all logbook entry from database
     socket.on('get All logbook entry', function(){
         logbook.find(function (err, data) {
             if (err) return console.error(err);
+            console.log(data);
             io.emit('get All logbook entry', data);
         });
     });
