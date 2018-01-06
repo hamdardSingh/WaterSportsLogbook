@@ -2,90 +2,87 @@
 
 angular
   .module('waterSportApp')
-  .controller('homeController',['$scope',function ($scope) {
-      var thisObj = $scope;
-      var socket =  io.connect('http://localhost:3000');
+  .controller('homeController',['$scope','$cookies',function ($scope, $cookies) {
 
-      function sendLogBookEntry(data) {
-          socket.emit('add entry in logbook', data);
-      };
-      //sendLogBookEntry();
-      socket.emit('get All logbook entry', {});
-      socket.on('get All logbook entry', function(data){
-          thisObj.db = {};
-          thisObj.db.items = [];
+    $scope.db = {};
+    $scope.db.items = [];
+    $scope.uniqueId = Math.random().toString(36).substr(2, 9);
+    if(!$cookies.get('userId')){
+      var expireDate = new Date();
+      expireDate.setDate(expireDate.getDate() + 1);
+      $cookies.put('userId',$scope.uniqueId,{'expires':expireDate});
+    }else {
+      $scope.uniqueId = $cookies.get('userId');
+    }
 
-          console.log(data)
-          for(var i in data) {
-              var obj = {};
-              obj.id = data[i]._id;
-              obj.Boat = data[i].Boat;
-              obj.Crew = data[i].Crew;
-              obj.Destination = data[i].Destination;
-              obj.Departure = data[i].Departure;
-              obj.Arrival = data[i].Arrival;
-              thisObj.db.items.push(obj);
-          }
-      });
-      socket.on('new changes found', function(data){
-          console.log("--------------new changes found---------------");
-          console.log(data);
-          var obj = {};
-          console.log("length "+thisObj.db.items.length);
-          console.log("row id: "+data.RowId)
-          if(data.RowId >= thisObj.db.items.length) {
-              console.log("if condition");
-              obj[data.Field] = data.Value;
-              thisObj.db.items.push(obj);
-          }else{
-              console.log("else condition");
-              obj = thisObj.db.items[data.RowId];
-              obj[data.Field] = data.Value;
-              thisObj.db.items[data.RowId] = obj;
-              console.log(obj)
-          }
-          //thisObj.db.items.push(obj);
-          thisObj.$apply()
-      });
+    var socket =  io.connect('http://localhost:5000');
+    $scope.minSpareRows = 1;
+    function sendLogBookEntry(data) {
+        socket.emit('add entry in logbook', data);
+    };
+    //sendLogBookEntry();
+    socket.emit('get All logbook entry', {});
+    socket.on('get All logbook entry', function(data){
 
-      thisObj.saveData = function() {
-          alert(1);
-      };
+        $scope.db.items = data;
+    });
+    socket.on('new changes found', function(data){
+      console.log("--------------new changes found---------------");
+      console.log(data);
+      var obj = {};
+      console.log("length "+$scope.db.items.length);
+      console.log("row id: "+data.RowId)
+      if(data.RowId >= $scope.db.items.length) {
+        console.log("if condition");
+        obj[data.Field] = data.Value;
+        $scope.db.items.push(obj);
+      }else{
+        console.log("else condition");
+        obj = $scope.db.items[data.RowId];
+        obj[data.Field] = data.Value;
+        $scope.db.items[data.RowId] = obj;
+        console.log(obj)
+      }
+      //$scope.db.items.push(obj);
+      $scope.$apply()
+    });
 
-      thisObj.afterChange =  function(changes, source) {
-          //console.log("after change method called");
-          //console.log(this.getData()); // it call itself many time and it crash the table
-          //console.log(source);
-          //console.log(changes);
-          if(source == "edit" && changes[0][3] != ""){
-              console.log("inside edit");
-              var rowID = changes[0][0];
-              socket.emit('on change', {
-                  RowId: rowID,
-                  Field: changes[0][1],
-                  Value: changes[0][3]
-              });
-              console.log("row id is");
-              console.log(this.getData()[rowID][0]);
-              var id = null;
-              if(this.getData()[rowID][0]){
-                  id = this.getData()[rowID][0];
-              }
-              sendLogBookEntry({RowId:rowID,ID:id,Field:changes[0][1],Value:changes[0][3]});
-          }
+    $scope.afterChange =  function(changes, source) {
+      console.log(changes);
+      if(source == "edit" && changes[0][3] != ""){
+        console.log("inside edit");
+        var rowID = changes[0][0];
+        socket.emit('on change', {
+          RowId: rowID,
+          Field: changes[0][1],
+          Value: changes[0][3]
+        });
+        var id = null;
+        if($scope.db.items[rowID] && $scope.db.items[rowID]['_id']){
+          id = $scope.db.items[rowID]['_id'];
+        }
+        sendLogBookEntry({RowId:rowID,ID:id,Field:changes[0][1],Value:changes[0][3],userId:$scope.uniqueId});
+      }
+    }
 
+    socket.on('sendNewId', function(data){
+      $scope.db.items[data.RowId]['_id'] = data['_id'];
+      $scope.db.items[data.RowId]['userId'] = data['userId'];
+      $scope.$apply();
+    });
+
+    $scope.cells = function (row, col, prop) {
+      var cellProperties = {};
+      if(typeof($scope.db.items[row]['userId']) !='undefined' && $scope.db.items[row]['userId'] == $scope.uniqueId){
+        cellProperties.readOnly = false;
+      }else if(typeof($scope.db.items[row]['userId']) == 'undefined'){
+        cellProperties.readOnly = false;
+      }else{
+        cellProperties.readOnly = true;
       }
 
-      socket.on('sendNewId', function(data){
-          var obj = {};
-          obj = thisObj.db.items[data.RowId];
-          console.log("-----------");
-          console.log(obj);
-          console.log(data.id);
-          obj.id = data.id;
-          //obj[id] = data.id;
-          thisObj.db.items[data.RowId] = obj;
-          thisObj.$apply();
-      });
+      //cellProperties.renderer = "cellRenderer";
+      return cellProperties;
+    }
 
   }]);

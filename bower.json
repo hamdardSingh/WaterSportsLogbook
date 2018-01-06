@@ -16,8 +16,9 @@
     "angular": "1.6.6",
     "ngHandsontable": "nghandsontable#^0.13.0",
     "angular-bootstrap": "^2.5.0",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "#v4.0.0-alpha.6",
     "angular-ui-router": "^1.0.11",
-    "angular-loading-bar": "^0.9.0"
+    "angular-loading-bar": "^0.9.0",
+    "angular-cookies": "^1.6.8"
   }
 }

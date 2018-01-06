@@ -9,25 +9,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var mongoose = require('mongoose');
 
-var db = mongoose.connection;
-var logbook;
-db.on('error', console.error);
-db.once('open', function() {
-                                                                 // creating different schemas for different tables
-   var logbookSchema = new mongoose.Schema({
-       Boat: String,
-       Crew: {type: String},
-        Destination: { type: String },
-        Departure : { type: String },
-        Arrival : { type: String }
-   });
-// Compile a 'logbook' model using the logbookSchema as the structure.
-// Mongoose also creates a MongoDB collection called 'logbook' for these documents.
-   logbook = mongoose.model('logbook', logbookSchema);
-});
-
-mongoose.connect('mongodb://localhost:27017/WaterSportsLogbook');
-
+var logbook = require('./app/logbookModel');
+//logbook.remove({}).exec(); //Empty Log Book
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -66,21 +49,22 @@ app.use(function(err, req, res, next) {
 });
 
 io.sockets.on('connection', function(socket){
-	
-	//functionality for saving logbook entry in database. 
+
+	//functionality for saving logbook entry in database.
     socket.on('add entry in logbook', function(data){
         //io.emit('chat message', data);
         console.log(data);
         var obj = {};
         obj[data.Field] = data.Value;
+        obj['userId'] = data.userId;
         var rowId = data.RowId;
         var logbookentry = new logbook(obj);
         if(data.ID ==  null) {
-            console.log("new entry");
+          console.log('new entry');
             logbookentry.save(function (err, thor) {
                 if (err) return console.error(err);
                 console.log(thor);
-                io.emit('sendNewId', {id:thor._id,RowId:rowId});
+                io.emit('sendNewId', {'_id':thor._id,RowId:rowId,'userId':thor.userId});
             });
         }else{
             console.log("old entry");
@@ -114,7 +98,7 @@ io.sockets.on('connection', function(socket){
 });
 
 var port = process.env.PORT || 3000;
-http.listen(port);
+http.listen(5000);
 
 
 module.exports = app;

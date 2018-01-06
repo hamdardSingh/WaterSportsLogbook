@@ -12,7 +12,8 @@ angular
     'ui.router',
     'ui.bootstrap',
     'angular-loading-bar',
-    'ngHandsontable'
+    'ngHandsontable',
+    'ngCookies'
   ])
   .config(['$stateProvider','$urlRouterProvider',function ($stateProvider,$urlRouterProvider) {
 
