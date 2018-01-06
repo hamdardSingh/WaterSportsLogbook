@@ -1,5 +1,6 @@
 var chai = require('chai');
 var expect = chai.expect;
+var logbook = require('../models/userModel.js');
 chai.Should();
 var io = require('socket.io-client')
     ,io_server = require('socket.io').listen(3000);
@@ -13,9 +14,6 @@ describe('1st unit test case', function () {
 })
 
 io = require('socket.io-client')
-var assert = require("assert")
-
-
 var socketURL = 'http://localhost:3000'
 var socketOptions = {
     transports: ['websocket'],
@@ -31,4 +29,29 @@ this.socket.on ('connect', function(socket) {
     console.log('connected')
 
     done();
-})})});
+})});
+
+    it('should save entry to database', function(done){
+
+                var test = logbook({
+                    Boat: 'The great',
+                    Crew: 'Him',
+                    Destination: 'Kiel',
+                    Departure:'2018-10-16',
+                    Arrival: '2018-12-16'
+                });
+            test.save();
+            done();
+                });
+
+    it('find out the entries', function(done){
+
+        logbook.find({ Boat: 'The great',
+            Crew: 'Him',
+            Destination: 'Kiel',
+            Departure:'2018-10-16',
+            Arrival: '2018-12-16'})
+        done();
+    });
+});
+
