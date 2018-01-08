@@ -1,4 +1,5 @@
 var express = require('express');
+var fs = require('fs');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -8,7 +9,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var mongoose = require('mongoose');
-
+mongoose.Promise = global.Promise;
 var logbook = require('./app/logbookModel');
 //logbook.remove({}).exec(); //Empty Log Book
 var app = express();
@@ -48,6 +49,36 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+/*app.get("/pathToYourDownload", function (req, res) {
+    json2csv({ data: myCars, fields: fields }, function(err, csv) {
+        res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+        res.set('Content-Type', 'text/csv');
+        res.status(200).send(csv);
+    });
+
+    // Create stream from query results
+    logbook.find({}).exec()
+        .then(function(docs) {
+            logbook.csvReadStream(docs)
+                .pipe(fs.createWriteStream('logbook.csv'));
+            console.log('.........i am here1111.........');
+            console.log(docs);
+            console.log('.........i am here222222222.........');
+        });
+
+});*/
+
+
+//app.get('/downloadcsv',function(req, res) {
+   /* res.writeHead(200, {
+        'Content-Type': 'text/csv',
+        'Content-Disposition': 'attachment; filename=logbook.csv'
+    });
+    // pipe file using mongoose-csv
+    logbook.find().limit(100).csv(res);*/
+ //  res.send("Hello Pooja")
+//})
+
 io.sockets.on('connection', function(socket){
 
 	//functionality for saving logbook entry in database.
@@ -79,8 +110,12 @@ io.sockets.on('connection', function(socket){
 
 	//functionality for getting all logbook entry from database
     socket.on('get All logbook entry', function(){
+        // Create stream from query results
+        console.log("........hihahahahha.................")
+
         logbook.find(function (err, data) {
             if (err) return console.error(err);
+            console.log("........getalldata.................");
             console.log(data);
             io.emit('get All logbook entry', data);
         });

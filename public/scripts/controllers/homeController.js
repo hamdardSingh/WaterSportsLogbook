@@ -2,7 +2,8 @@
 
 angular
   .module('waterSportApp')
-  .controller('homeController',['$scope','$cookies',function ($scope, $cookies) {
+  .controller('homeController',['$scope','$cookies','$http',function ($scope, $cookies,$http) {
+      //  console.log(logbookService.getCSV())
 
     $scope.db = {};
     $scope.db.items = [];
@@ -49,6 +50,7 @@ angular
 
     $scope.afterChange =  function(changes, source) {
       console.log(changes);
+       // getCSV();
       if(source == "edit" && changes[0][3] != ""){
         console.log("inside edit");
         var rowID = changes[0][0];
@@ -63,6 +65,7 @@ angular
         }
         sendLogBookEntry({RowId:rowID,ID:id,Field:changes[0][1],Value:changes[0][3],userId:$scope.uniqueId});
       }
+      //  getCSV();
     }
 
     socket.on('sendNewId', function(data){
@@ -84,5 +87,14 @@ angular
       //cellProperties.renderer = "cellRenderer";
       return cellProperties;
     }
+
+      $scope.exportFile =  function(){
+          $http.get('/downloadcsv').then(function(response){
+              window.location = "/exportRegister.csv";
+          });
+      }
+
+
+
 
   }]);
