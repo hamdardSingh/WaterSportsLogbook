@@ -17,6 +17,7 @@ angular
     $scope.login = false;
     if($cookies.get('__admin')){
       $scope.user = JSON.parse($cookies.get('__admin'));
+      $rootScope.admin = $scope.user;
       $scope.login = true;
     }
 
@@ -27,6 +28,7 @@ angular
           alert('Invalid username or password');
         }else{
             $scope.user = data.data.user;
+            $rootScope.admin = $scope.user;
             $scope.login = true;
             $cookies.put('__admin',JSON.stringify(data.data.user));
         }
