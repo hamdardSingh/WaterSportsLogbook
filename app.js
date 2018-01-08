@@ -20,8 +20,6 @@ var io = require('socket.io')(http);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(session({secret: '0099909090'}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -50,17 +48,16 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+//Socket Connection
 io.sockets.on('connection', function(socket){
-
 	//functionality for saving logbook entry in database.
     socket.on('add entry in logbook', function(data){
-        //io.emit('chat message', data);
-        console.log(data);
         var obj = {};
         obj[data.Field] = data.Value;
         obj['userId'] = data.userId;
         var rowId = data.RowId;
         var logbookentry = new logbook(obj);
+        //Case When new entry is added
         if(data.ID ==  null) {
           console.log('new entry');
             logbookentry.save(function (err, thor) {
@@ -68,33 +65,27 @@ io.sockets.on('connection', function(socket){
                 console.log(thor);
                 io.emit('sendNewId', {'_id':thor._id,RowId:rowId,'userId':thor.userId});
             });
+        //Case When update on entry
         }else{
-            console.log("old entry");
             var id = mongoose.Types.ObjectId(data.ID);
             logbook.findOneAndUpdate({_id : id},obj, function (err, data) {
                 if (err)
                     console.log(err);
-                console.log(data);
             });
         }
     });
 
 	//functionality for getting all logbook entry from database
     socket.on('get All logbook entry', function(){
-        // Create stream from query results
-        console.log("........hihahahahha.................")
-
         logbook.find(function (err, data) {
             if (err) return console.error(err);
-            console.log("........getalldata.................");
-            console.log(data);
+            //Send data to users
             io.emit('get All logbook entry', data);
         });
     });
-
+     //Method called in case of any change found in table
     socket.on('on change', function(data){
-        console.log("on change method>>>>>>>>>>>");
-        console.log(data);
+        //broadcast to all user whenever changes is made
         socket.broadcast.emit('new changes found',data)
     });
 });
