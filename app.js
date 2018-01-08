@@ -75,10 +75,7 @@ io.sockets.on('connection', function(socket){
                     console.log(err);
                 console.log(data);
             });
-
-
         }
-
     });
 
 	//functionality for getting all logbook entry from database
@@ -95,7 +92,6 @@ io.sockets.on('connection', function(socket){
         console.log(data);
         socket.broadcast.emit('new changes found',data)
     });
-
 });
 
 var port = process.env.PORT || 3000;
