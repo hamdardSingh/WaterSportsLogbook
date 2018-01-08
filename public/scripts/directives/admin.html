@@ -1,0 +1,12 @@
+<form name="adminForm" method="post" ng-if="!login" novalidate>
+  <div class="input-group">
+  <input type="text" ng-class="{'in-error':adminForm.username.$invalid}" name="username" ng-model="admin.username" class="form-control form-control-sm" placeholder="username" ng-required="true">
+  <input type="password" ng-class="{'in-error':adminForm.password.$invalid}" name="password" ng-model="admin.password" class="form-control form-control-sm" placeholder="password" ng-required="true">
+  <span class="input-group-btn">
+    <button class="btn btn-primary btn-sm" ng-disabled="adminForm.password.$invalid" type="button" ng-click="loginAdmin()">Login</button>
+  </span>
+  </div>
+</form>
+<span ng-if="login">
+  <i class="fa fa-user"></i> {{user.username}}
+</span>

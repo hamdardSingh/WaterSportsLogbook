@@ -5,12 +5,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var session = require('express-session');
 var index = require('./routes/index');
-var users = require('./routes/users');
+var adminApi = require('./routes/adminApi');
 var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+mongoose.connect("mongodb://localhost/logbook",{useMongoClient: true});
 var logbook = require('./app/logbookModel');
+var adminModel = require('./app/adminModel');
 //logbook.remove({}).exec(); //Empty Log Book
 var app = express();
 var http = require('http').Server(app);
@@ -19,9 +20,9 @@ var io = require('socket.io')(http);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(session({secret: '0099909090'}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/admin/api/v1', adminApi);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -48,36 +49,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-/*app.get("/pathToYourDownload", function (req, res) {
-    json2csv({ data: myCars, fields: fields }, function(err, csv) {
-        res.setHeader('Content-disposition', 'attachment; filename=data.csv');
-        res.set('Content-Type', 'text/csv');
-        res.status(200).send(csv);
-    });
-
-    // Create stream from query results
-    logbook.find({}).exec()
-        .then(function(docs) {
-            logbook.csvReadStream(docs)
-                .pipe(fs.createWriteStream('logbook.csv'));
-            console.log('.........i am here1111.........');
-            console.log(docs);
-            console.log('.........i am here222222222.........');
-        });
-
-});*/
-
-
-//app.get('/downloadcsv',function(req, res) {
-   /* res.writeHead(200, {
-        'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename=logbook.csv'
-    });
-    // pipe file using mongoose-csv
-    logbook.find().limit(100).csv(res);*/
- //  res.send("Hello Pooja")
-//})
 
 io.sockets.on('connection', function(socket){
 

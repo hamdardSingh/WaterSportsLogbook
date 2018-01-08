@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var mongoose_csv = require('mongoose-to-csv');
-var db = mongoose.createConnection('localhost', 'openhelp');
 var Schema = mongoose.Schema;
 
 var logbook = new mongoose.Schema({
@@ -23,6 +22,6 @@ logbook.plugin(mongoose_csv, {
         'Arrival' :  'Arrival'
     }
 });
-var logbookModel = db.model('logbook',logbook);
 
+var logbookModel = mongoose.model('logbook',logbook);
 module.exports = logbookModel;

@@ -1,6 +1,7 @@
 var chai = require('chai');
 var expect = chai.expect;
 var assert = require('assert');
+var ap= require('../app');
 var logbook = require('../app/logbookModel');
 chai.Should();
 
