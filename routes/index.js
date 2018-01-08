@@ -4,9 +4,10 @@ var router = express.Router();
 var fs = require('fs');
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'WaterSportsLogbook' });
 });
 
+//api for downloading logbook entry in csv
 router.get('/downloadcsv', function(req, res, next) {
   logbook.find({}).exec()
       .then(function(docs) {

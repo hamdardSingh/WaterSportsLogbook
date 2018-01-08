@@ -6,6 +6,7 @@ angular
     $scope.db = {};
     $scope.db.items = [];
     $scope.uniqueId = Math.random().toString(36).substr(2, 9);
+
     if(!$cookies.get('userId')){
       var expireDate = new Date();
       expireDate.setDate(expireDate.getDate() + 1);
@@ -25,30 +26,25 @@ angular
 
         $scope.db.items = data;
     });
+
+     //For new changes made
     socket.on('new changes found', function(data){
-      console.log("--------------new changes found---------------");
-      console.log(data);
       var obj = {};
-      console.log("length "+$scope.db.items.length);
-      console.log("row id: "+data.RowId)
       if(data.RowId >= $scope.db.items.length) {
-        console.log("if condition");
         obj[data.Field] = data.Value;
         $scope.db.items.push(obj);
       }else{
-        console.log("else condition");
         obj = $scope.db.items[data.RowId];
         obj[data.Field] = data.Value;
         $scope.db.items[data.RowId] = obj;
-        console.log(obj)
       }
       //$scope.db.items.push(obj);
       $scope.$apply()
     });
 
+
+    //Method called whenever new changes is made to table
     $scope.afterChange =  function(changes, source) {
-      console.log(changes);
-       // getCSV();
       if(source == "edit" && changes[0][3] != ""){
         console.log("inside edit");
         var rowID = changes[0][0];
@@ -63,7 +59,6 @@ angular
         }
         sendLogBookEntry({RowId:rowID,ID:id,Field:changes[0][1],Value:changes[0][3],userId:$scope.uniqueId});
       }
-      //  getCSV();
     }
 
     socket.on('sendNewId', function(data){
@@ -72,6 +67,7 @@ angular
       $scope.$apply();
     });
 
+    //Method for making row readonly for other users
     $scope.cells = function (row, col, prop) {
       var cellProperties = {readOnly:false};
       if($scope.db.items[row] && typeof($scope.db.items[row]['userId']) !='undefined' && $scope.db.items[row]['userId'] != $scope.uniqueId){
@@ -83,12 +79,11 @@ angular
       if($rootScope.admin && $rootScope.admin['_id']){
         cellProperties.readOnly = false;
       }
-
-      //cellProperties.renderer = "cellRenderer";
       return cellProperties;
     }
 
-      $scope.exportFile =  function(){
+     //Method to export CSV file
+     $scope.exportFile =  function(){
           $http.get('/downloadcsv').then(function(response){
               window.location = "/exportRegister.csv";
           });
