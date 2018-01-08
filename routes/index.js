@@ -1,5 +1,6 @@
 var express = require('express');
 var logbook = require('../app/logbookModel');
+var adminAuth = require('../app/middleware/adminAuth').adminAuth;
 var router = express.Router();
 var fs = require('fs');
 /* GET home page. */
@@ -8,7 +9,7 @@ router.get('/', function(req, res, next) {
 });
 
 //api for downloading logbook entry in csv
-router.get('/downloadcsv', function(req, res, next) {
+router.get('/downloadcsv', adminAuth,function(req, res, next) {
   logbook.find({}).exec()
       .then(function(docs) {
         logbook.csvReadStream(docs)

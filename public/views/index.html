@@ -20,7 +20,7 @@
           <hot-column data="Arrival" title="'Arrival'" editor="'datetime'" date-format="'yy/mm/dd'" time-format="HH:mm" width="176"></hot-column>
       </hot-table>
     </div>
-    <div class="col-md-12" style="margin-top:15px">
+    <div class="col-md-12" style="margin-top:15px" ng-if="$root.admin">
       <button class="btn btn-primary btn-sm"  ng-click="exportFile()">Export to CSV!!!</button>
     </div>
   </div>
