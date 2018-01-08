@@ -2,7 +2,7 @@
 
 angular
   .module('waterSportApp')
-  .controller('homeController',['$scope','$cookies',function ($scope, $cookies) {
+  .controller('homeController',['$scope','$rootScope','$cookies',function ($scope,$rootScope, $cookies) {
 
     $scope.db = {};
     $scope.db.items = [];
@@ -72,13 +72,15 @@ angular
     });
 
     $scope.cells = function (row, col, prop) {
-      var cellProperties = {};
-      if(typeof($scope.db.items[row]['userId']) !='undefined' && $scope.db.items[row]['userId'] == $scope.uniqueId){
-        cellProperties.readOnly = false;
-      }else if(typeof($scope.db.items[row]['userId']) == 'undefined'){
-        cellProperties.readOnly = false;
-      }else{
+      var cellProperties = {readOnly:false};
+      if($scope.db.items[row] && typeof($scope.db.items[row]['userId']) !='undefined' && $scope.db.items[row]['userId'] != $scope.uniqueId){
         cellProperties.readOnly = true;
+      }else{
+        cellProperties.readOnly = false
+      }
+
+      if($rootScope.admin && $rootScope.admin['_id']){
+        cellProperties.readOnly = false;
       }
 
       //cellProperties.renderer = "cellRenderer";
