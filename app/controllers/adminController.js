@@ -18,6 +18,11 @@ module.exports.login = function(req,res){
   });
 }
 
+module.exports.logOut = function (req,res) {
+	if(req.session.admin) req.session.destroy();
+  res.send('OK');
+}
+
 module.exports.createDummy = function (req,res) {
 	var result = [];
 	var newAdmin = new adminModel({

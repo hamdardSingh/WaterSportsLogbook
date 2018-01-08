@@ -12,12 +12,12 @@
   </div>
   <div class="row">
     <div class="col-md-12">
-      <hot-table settings="{colHeaders: colHeaders,rowHeaders:true, contextMenu: ['row_above', 'row_below', 'remove_row'], afterChange: afterChange,cells:cells}" min-spare-rows="minSpareRows" datarows="db.items">
-          <hot-column data="Boat" title="'Boat'" width="115"></hot-column>
-          <hot-column data="Crew" title="'Crew'" width="115"></hot-column>
-          <hot-column data="Destination" title="'Destination'" width="131"></hot-column>
-          <hot-column data="Departure" title="'Departure'" type="'date'" width="147"></hot-column>
-          <hot-column data="Arrival" title="'Arrival'" width="147"></hot-column>
+      <hot-table settings="{colHeaders: colHeaders,rowHeaders:true,columnSorting: true, contextMenu: ['row_below', 'remove_row'], afterChange: afterChange,cells:cells}" min-spare-rows="minSpareRows" datarows="db.items">
+          <hot-column data="Boat" title="'Boat'" width="145"></hot-column>
+          <hot-column data="Crew" title="'Crew'" width="145"></hot-column>
+          <hot-column data="Destination" title="'Destination'" width="160"></hot-column>
+          <hot-column data="Departure" title="'Departure'" editor="'datetime'" date-format="'yy/mm/dd'" time-format="HH:mm" width="176"></hot-column>
+          <hot-column data="Arrival" title="'Arrival'" editor="'datetime'" date-format="'yy/mm/dd'" time-format="HH:mm" width="176"></hot-column>
       </hot-table>
     </div>
     <div class="col-md-12" style="margin-top:15px">

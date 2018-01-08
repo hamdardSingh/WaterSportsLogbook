@@ -7,6 +7,13 @@
   </span>
   </div>
 </form>
-<span ng-if="login">
-  <i class="fa fa-user"></i> {{user.username}}
+<span ng-if="login" class="pull-right">
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fa fa-user"></i> {{user.username}}
+    </button>
+    <div class="dropdown-menu" style="font-size:12px" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" ng-click="logout()"> <i class="fa fa-sign-out"></i>Logout</a>
+    </div>
+  </div>
 </span>

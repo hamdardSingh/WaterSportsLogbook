@@ -37,4 +37,12 @@ angular
       });
     }
 
+    $scope.logout = function () {
+      $cookies.remove('__admin');
+      $scope.login = false;
+      $scope.user = {};
+      $rootScope.admin = {};
+      $http.post('/admin/api/v1/logout');
+    }
+
   })
