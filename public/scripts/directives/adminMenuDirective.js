@@ -41,7 +41,7 @@ angular
       $cookies.remove('__admin');
       $scope.login = false;
       $scope.user = {};
-      $rootScope.admin = {};
+      $rootScope.admin = false;
       $http.post('/admin/api/v1/logout');
     }
 

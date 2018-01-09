@@ -46,6 +46,7 @@ angular
     //Method called whenever new changes is made to table
     $scope.afterChange =  function(changes, source) {
       if(source == "edit" && changes[0][3] != ""){
+        var userId = $scope.uniqueId;
         console.log("inside edit");
         var rowID = changes[0][0];
         socket.emit('on change', {
@@ -57,7 +58,10 @@ angular
         if($scope.db.items[rowID] && $scope.db.items[rowID]['_id']){
           id = $scope.db.items[rowID]['_id'];
         }
-        sendLogBookEntry({RowId:rowID,ID:id,Field:changes[0][1],Value:changes[0][3],userId:$scope.uniqueId});
+        if($scope.db.items[rowID] && $scope.db.items[rowID]['userId']){
+          userId = $scope.db.items[rowID]['userId'];
+        }
+        sendLogBookEntry({RowId:rowID,ID:id,Field:changes[0][1],Value:changes[0][3],userId:userId});
       }
     }
 
@@ -76,6 +80,10 @@ angular
         cellProperties.readOnly = false
       }
 
+      if($scope.db.items[row] && $scope.db.items[row].Boat && $scope.db.items[row].Crew && $scope.db.items[row].Destination && $scope.db.items[row].Departure && $scope.db.items[row].Arrival){
+        cellProperties.readOnly = true;
+      }
+
       if($rootScope.admin && $rootScope.admin['_id']){
         cellProperties.readOnly = false;
       }
@@ -88,7 +96,6 @@ angular
               window.location = "/exportRegister.csv";
           });
       }
-
 
 
 
