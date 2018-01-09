@@ -19,4 +19,11 @@ describe('adminController', function(){
 		scope.login.should.equal(false);
 	}));
 
+	it('admin should logout', inject(function($controller,$httpBackend){
+    var scope = {};
+		var homeController = $controller('adminController',{$scope:scope});
+		scope.login.should.equal(true);
+	}));
+
+
 });
