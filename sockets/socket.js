@@ -4,6 +4,8 @@ var mongoose = require('mongoose');
 
 exports.connect= function (io) {
     io.sockets.on('connection', function(socket){
+
+
         //functionality for saving logbook entry in database.
         socket.on('add entry in logbook', function(data){
             var obj = {};

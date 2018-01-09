@@ -8,7 +8,7 @@ chai.Should();
 
 describe ('mongoose', function(){
 
-    beforeEach('should save entry to database', function(done){
+    it('should save entry to database', function(done){
         var test = logbook({
             Boat: 'The great',
             Crew: 'Him',
@@ -32,7 +32,7 @@ describe ('mongoose', function(){
         done();
     });
 
-    afterEach('Deletes entry', function (done) {
+    it('Deletes entry', function (done) {
         logbook.findOneAndRemove({Boat: 'The great',
             Crew: 'Him',
             Destination: 'Kiel',
