@@ -24,6 +24,7 @@ angular
     $scope.loginAdmin = function () {
 
       $http.post('/admin/api/v1/login',$scope.admin).then(function (data) {
+        console.log('test');
         if(data.data.error == 1){
           alert('Invalid username or password');
         }else{
@@ -32,7 +33,8 @@ angular
             $scope.login = true;
             $cookies.put('__admin',JSON.stringify(data.data.user));
         }
-      },function () {
+      },function (a,b,c) {
+        console.log(a,b,c);
         alert('Network Error: Please retry..')
       });
     }
